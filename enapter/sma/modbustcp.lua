@@ -128,4 +128,20 @@ function SmaModbusTcp:read_s32_fix3(address)
   end
 end
 
+function SmaModbusTcp:read_u64(address)
+  local reg = self:read_holdings(address, 4)
+  if not reg then return end
+
+  local raw = string.pack(
+    "BBBBBBBB", reg[1]>>8, reg[1]&0xff, reg[2]>>8, reg[2]&0xff,
+    reg[3]>>8, reg[3]&0xff, reg[4]>>8, reg[4]&0xff
+  )
+
+  return string.unpack('>I8', raw)
+end
+
+function SmaModbusTcp:read_u64_fix0(address)
+  return self:read_u64(address)
+end
+
 return SmaModbusTcp
